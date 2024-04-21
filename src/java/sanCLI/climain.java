@@ -11,7 +11,7 @@ public class climain {
 		Scanner sc = new Scanner(System.in);
 		String comando="", contenido, rutas;
 		boolean cambios;
-		
+		String[] tempArgs= null;
 		do {
 			System.out.print("proto > ");
 			contenido=sc.nextLine();
@@ -47,7 +47,14 @@ public class climain {
 				break;
 				case "view":
 					rutas = captarContenido(contenido);
-					String[] tempArgs = new String[2];
+					tempArgs = new String[2];
+					tempArgs[0]=comando;
+					tempArgs[1]=rutas;
+					src.java.proto.main(tempArgs);
+				break;
+				case "edit":
+					rutas = captarContenido(contenido);
+					tempArgs = new String[2];
 					tempArgs[0]=comando;
 					tempArgs[1]=rutas;
 					src.java.proto.main(tempArgs);
@@ -71,6 +78,7 @@ public class climain {
 		System.out.println("ll: Como ls pero muestra también el tamaño y la fecha de última modificación.");
 		System.out.println("help: Muestra una breve ayuda con los comandos disponibles.");
 		System.out.println("view: Carga cualquier archivo interpretable como texto.");
+		System.out.println("edit: Carga cualquier archivo interpretable como texto y muestra una interfaz para su edicion.");
 		System.out.println("clear: Limpia la consola.");
 		System.out.println("exit: Termina el programa.");
 
@@ -89,7 +97,8 @@ public class climain {
 		}
 		// vemos que sea valido
 		if(!comand.equals("pwd") && !comand.equals("cd") && !comand.equals("ls") && !comand.equals("ll") &&
-			 !comand.equals("help") && !comand.equals("exit") && !comand.equals("view") && !comand.equals("clear")) {
+			 !comand.equals("help") && !comand.equals("exit") && !comand.equals("view") && 
+			 !comand.equals("clear") && !comand.equals("edit")) {
 			throw new Exception("Comando no valido");
 		}
 		// devolvemos el comando

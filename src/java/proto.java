@@ -6,14 +6,19 @@ public class proto {
     public static void main(String[] args) {
         switch (args[0]) {
             case "view":
-            viewCall(args[1]);
+                viewCall(args[1], true);
+            break;
+            case "edit":
+                editInitCall(args[1]);
         }
     }
 
-    static void viewCall(String ruta) {
+    static void editInitCall(String ruta) {
+        viewCall(ruta, false);
+    }
 
-        String txt = "\n-----------------------------------------\n";
-
+    static void viewCall(String ruta, boolean headers) {
+        String txt = "", hds = "\n-----------------------------------------\n";
         try {
             File f = new File(ruta);
             Scanner fr = new Scanner(f);
@@ -28,6 +33,10 @@ public class proto {
             System.out.println("La ruta es errónea." + "\n" + e.getMessage());
         }
 
-        System.out.println(txt+"\n-----------------------------------------\n");
+        if(headers) {
+            txt=hds+txt+hds;
+        }
+
+        System.out.println(txt);
     }
 }
