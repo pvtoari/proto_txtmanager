@@ -1,11 +1,12 @@
 // codigo original:
 //	https://github.com/SanFdezz/PROGRAMACION-1-DAW
 
-package src.java.sanCLI;
+package main.libs.sanCLI;
 import java.util.*;
 //import java.io.*;
 
 public class climain {
+	public static boolean editing = false;
 	public static void main(String[] args) {
 		
 		Scanner sc = new Scanner(System.in);
@@ -50,21 +51,22 @@ public class climain {
 					tempArgs = new String[2];
 					tempArgs[0]=comando;
 					tempArgs[1]=rutas;
-					src.java.proto.main(tempArgs);
+					main.libs.proto.main(tempArgs);
 				break;
 				case "edit":
 					rutas = captarContenido(contenido);
 					tempArgs = new String[2];
 					tempArgs[0]=comando;
 					tempArgs[1]=rutas;
-					src.java.proto.main(tempArgs);
+					editing = true;
+					main.libs.proto.main(tempArgs);
 				break;
 				case "clear":
 					System.out.print("\033\143");
 				break;
 			}
 				
-		}while(!comando.equals("exit"));
+		}while(!comando.equals("exit") && !editing);
 		
 		sc.close();
 	}

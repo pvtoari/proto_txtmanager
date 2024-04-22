@@ -1,7 +1,7 @@
 // codigo original:
 //	https://github.com/SanFdezz/PROGRAMACION-1-DAW
 
-package src.java.sanCLI;
+package main.libs.sanCLI;
 import java.io.*;
 import java.util.*;
 public class manager {
