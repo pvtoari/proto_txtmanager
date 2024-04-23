@@ -37,3 +37,17 @@ Once run, we need to tell our applications to connect to the server we started. 
 Once that’s done, keyboard-capturing functionalities will work on a headless mode environment by using a web interface.
 
 Credits to [@dtinth](https://github.com/dtinth) for the noVNC guide.
+
+## Requirements
+
+When using functionalities where JNativeHook is involved, there might be some problems with missing packages, for example using Codespaces.
+
+For Linux, using a Bash terminal, run the following commands:
+```
+apt-get install -y libxkbcommon-x11-0
+apt install libxkbcommon-dev
+apt install libxtst6
+apt install libxtst-dev
+```
+
+Errors in other operating systems are not expected.
