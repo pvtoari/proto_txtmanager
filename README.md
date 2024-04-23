@@ -5,7 +5,9 @@ W.I.P. Java-based simple CLI with navigating and text view-editing fuctions.
 
 Since JNativeHook needs a X11 display to work, a solution can be done using noVNC, that means using a web to capture keyboard stuff.
 
-This is possible with noVNC (opens new window) (a web-based VNC client) and Xtigervnc (opens new window) (a VNC server that supports X11). Here’s a script to set them up with Docker Compose. To use it, copy the following snippet into a new Bash terminal:
+This is possible with noVNC (opens new window) (a web-based VNC client) and Xtigervnc (opens new window) (a VNC server that supports X11). Here’s a script to set them up with Docker Compose. 
+
+A bash file is already included on the repository, but you can set it up by yourself copying the following snippet into a new Bash terminal:
 
 ```
 mkdir -p ~/setup-display && cd ~/setup-display
