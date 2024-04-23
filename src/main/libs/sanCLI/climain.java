@@ -8,6 +8,7 @@ import java.util.*;
 public class climain {
 	public static boolean editing = false;
 	public static void main(String[] args) {
+		editing = false;
 		
 		Scanner sc = new Scanner(System.in);
 		String comando="", contenido, rutas;

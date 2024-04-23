@@ -2,14 +2,9 @@ package main.libs;
 
 import java.util.*;
 import java.io.*;
-import com.github.kwhat.jnativehook.GlobalScreen;
-import com.github.kwhat.jnativehook.NativeHookException;
-import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
-import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
-
 import main.libs.sanCLI.climain;
 
-public class proto implements NativeKeyListener{
+public class proto {
     public static void main(String[] args) {
         switch (args[0]) {
             case "view":
@@ -23,18 +18,7 @@ public class proto implements NativeKeyListener{
 
     static void editInitCall(String ruta) {
         viewCall(ruta, false);
-        
-        try {
-			GlobalScreen.registerNativeHook();
-		}
-		catch (NativeHookException ex) {
-			System.err.println("There was a problem registering the native hook.");
-			System.err.println(ex.getMessage());
-
-			System.exit(1);
-		}
-
-		GlobalScreen.addNativeKeyListener(new proto());
+        main.libs.listener.main(null);
     }
 
     static void viewCall(String ruta, boolean headers) {
@@ -59,23 +43,4 @@ public class proto implements NativeKeyListener{
 
         System.out.println(txt);
     }
-    
-    public void nativeKeyPressed(NativeKeyEvent e) {
-		System.out.println("pulsao: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
-
-		if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
-            		try {
-                		GlobalScreen.unregisterNativeHook();
-                		main.libs.sanCLI.climain.editing = false;
-                		//libs.sanCLI.climain.main(null);
-                		main.run_me.main(null);
-            		} catch (NativeHookException nativeHookException) {
-                		nativeHookException.printStackTrace();
-            		}
-        	}
-	}
-
-	public void nativeKeyReleased(NativeKeyEvent e) {}
-
-	public void nativeKeyTyped(NativeKeyEvent e) {}
 }
