@@ -36,6 +36,8 @@ Once run, we need to tell our applications to connect to the server we started. 
 
 ```export DISPLAY=127.0.0.1:0```
 
+___Warning: this must be done every time X11 features are needed on headless mode.___
+
 Once that’s done, keyboard-capturing functionalities will work on a headless mode environment by using a web interface.
 
 Credits to [@dtinth](https://github.com/dtinth) for the noVNC guide.
