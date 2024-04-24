@@ -15,7 +15,7 @@ public class mightbeuseful {
         JLabel label = new JLabel("fdgfdshgfd");   
         panel.add(label); 
         frame.add(panel);  
-        frame.setSize(1, 1);  
+        frame.setSize(100, 100);  
         frame.setLocationRelativeTo(null);  
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
         frame.setVisible(true);  
