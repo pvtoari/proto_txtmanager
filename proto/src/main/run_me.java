@@ -1,18 +1,16 @@
 package main;
 
-import java.io.IOException;
+import main.libs.jarloader;
+import main.libs.listener;
 
 public class run_me {
     public static void main(String[] args) {
-        try {
-            main.libs.libraryloader.loadLibrary("JNativeHook");
-            // El resto de tu código va aquí...
-        } catch (Exception e) {
+        if (!listener.isListenerRunnable()) {
             System.out.println("\nError loading JNativeHook library, keyboard-reading functions may not work\n");
-            e.printStackTrace();
             System.out.println("\nContinuing without JNativeHook...");
         }
-
+            
         main.libs.sanCLI.climain.main(null);
+        
+        }
     }
-}
