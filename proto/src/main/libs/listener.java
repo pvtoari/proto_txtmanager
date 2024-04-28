@@ -3,25 +3,30 @@ package main.libs;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import main.run_me;
+import main.libs.sanCLI.climain;
+
 public class listener {
 
+    private static boolean finished;
     public static void main(String[] args) {
+        System.out.println("Running listener...");
         try {
-
+            
             jarloader jarLoader = new jarloader("proto\\jarLibs\\jnativehook-2.2.2.jar");
-
-            // Load the classes
+            
             Class<?> globalScreenClass = jarLoader.loadClass("com.github.kwhat.jnativehook.GlobalScreen");
-            Class<?> nativeHookExceptionClass = jarLoader.loadClass("com.github.kwhat.jnativehook.NativeHookException");
             Class<?> nativeKeyEventClass = jarLoader.loadClass("com.github.kwhat.jnativehook.keyboard.NativeKeyEvent");
             Class<?> nativeKeyListenerClass = jarLoader.loadClass("com.github.kwhat.jnativehook.keyboard.NativeKeyListener");
+
+            jarLoader.close();
 
             Object listenerInstance = Proxy.newProxyInstance(
                 nativeKeyListenerClass.getClassLoader(),
                 new Class<?>[] { nativeKeyListenerClass },
                 (proxy, method, methodArgs) -> {
                     if (method.getName().equals("nativeKeyPressed")) {
-                        // Handle nativeKeyPressed event
+                        
 						Method getKeyCodeMethod = nativeKeyEventClass.getMethod("getKeyCode");
 						int keyCode = (int) getKeyCodeMethod.invoke(methodArgs[0]);
 
@@ -31,32 +36,27 @@ public class listener {
 							Method unregisterNativeHookMethod = globalScreenClass.getMethod("unregisterNativeHook");
 							unregisterNativeHookMethod.invoke(null);
 
-							main.libs.sanCLI.climain.editing = false;
-							main.libs.sanCLI.climain.main(null);
+                            System.out.println("ESC key pressed, exiting editing mode.");
 						}
-
+                        
                     } else if (method.getName().equals("nativeKeyReleased")) {
-                        // Handle nativeKeyReleased event
+                        // nativeKeyReleased event handling
                     } else if (method.getName().equals("nativeKeyTyped")) {
-                        // Handle nativeKeyTyped event
+                        // nativeKeyTyped event handling
                     }
                     return null;
                 }
-            );
+                );
 
-            // Get the methods
-            Method registerNativeHookMethod = globalScreenClass.getMethod("registerNativeHook");
-            Method addNativeKeyListenerMethod = globalScreenClass.getMethod("addNativeKeyListener", nativeKeyListenerClass);
-
-            // Register the native hook
-            registerNativeHookMethod.invoke(null);
-
-            // Add the native key listener
-            addNativeKeyListenerMethod.invoke(null, listenerInstance);
-        } catch (Exception e) {
-            System.err.println("There was a problem registering the native hook.");
-            e.printStackTrace();
-        }
+                Method registerNativeHookMethod = globalScreenClass.getMethod("registerNativeHook");
+                Method addNativeKeyListenerMethod = globalScreenClass.getMethod("addNativeKeyListener", nativeKeyListenerClass);
+                
+                registerNativeHookMethod.invoke(null);
+                addNativeKeyListenerMethod.invoke(null, listenerInstance);
+            } catch (Exception e) {
+                System.err.println("There was a problem registering the native hook.");
+                e.printStackTrace();
+            }
     }
 
 	public static boolean isListenerRunnable() {
@@ -88,48 +88,3 @@ public class listener {
         }
 	}
 }
-
-/*
-
-package main.libs;
-import com.github.kwhat.jnativehook.GlobalScreen;
-import com.github.kwhat.jnativehook.NativeHookException;
-import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
-import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
-
-public class listener implements NativeKeyListener {
-
-	public void nativeKeyPressed(NativeKeyEvent e) {
-		System.out.println("Key Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
-
-		if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
-			try {
-				GlobalScreen.unregisterNativeHook();
-
-				main.libs.sanCLI.climain.editing = false;
-				main.libs.sanCLI.climain.main(null);
-			} catch (NativeHookException nativeHookException) {
-				nativeHookException.printStackTrace();
-			}
-		}
-	}
-
-	public void nativeKeyReleased(NativeKeyEvent e) {}
-
-	public void nativeKeyTyped(NativeKeyEvent e) {}
-
-	public static void main(String[] args) {
-		try {
-			GlobalScreen.registerNativeHook();
-		}
-		catch (NativeHookException ex) {
-			System.err.println("There was a problem registering the native hook.");
-			System.err.println(ex.getMessage());
-			//System.exit(1);
-		}
-
-		GlobalScreen.addNativeKeyListener(new listener());
-	}
-}
-
- */

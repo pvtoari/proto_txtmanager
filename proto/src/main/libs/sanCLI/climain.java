@@ -5,15 +5,18 @@ package main.libs.sanCLI;
 import java.util.*;
 //import java.io.*;
 
+import main.libs.proto;
+
 public class climain {
-	public static boolean editing = false;
+
 	public static void main(String[] args) {
-		editing = false;
-		
+		System.out.println("Running main CLI...");
 		Scanner sc = new Scanner(System.in);
+		sc.nextLine();
 		String comando="", contenido, rutas;
 		boolean cambios;
 		String[] tempArgs= null;
+		System.out.println("paso por aqui");
 		do {
 			System.out.print("proto > ");
 			contenido=sc.nextLine();
@@ -52,22 +55,23 @@ public class climain {
 					tempArgs = new String[2];
 					tempArgs[0]=comando;
 					tempArgs[1]=rutas;
-					main.libs.proto.main(tempArgs);
+					proto.main(tempArgs);
 				break;
 				case "edit":
 					rutas = captarContenido(contenido);
 					tempArgs = new String[2];
 					tempArgs[0]=comando;
 					tempArgs[1]=rutas;
-					editing = true;
-					main.libs.proto.main(tempArgs);
+					
+					comando = "exit";
+					proto.main(tempArgs);
 				break;
 				case "clear":
 					System.out.print("\033\143");
 				break;
 			}
 				
-		}while(!comando.equals("exit") && !editing);
+		}while(!comando.equals("exit"));
 		
 		sc.close();
 	}
@@ -80,8 +84,8 @@ public class climain {
 		System.out.println("ls: Muestra la lista de directorios y archivos de la carpeta actual");
 		System.out.println("ll: Como ls pero muestra también el tamaño y la fecha de última modificación.");
 		System.out.println("help: Muestra una breve ayuda con los comandos disponibles.");
-		System.out.println("view: Carga cualquier archivo interpretable como texto.");
-		System.out.println("edit: Carga cualquier archivo interpretable como texto y muestra una interfaz para su edicion.");
+		System.out.println("view <DIR>: Carga cualquier archivo interpretable como texto.");
+		System.out.println("edit <DIR>: Carga cualquier archivo interpretable como texto y muestra una interfaz para su edicion.");
 		System.out.println("clear: Limpia la consola.");
 		System.out.println("exit: Termina el programa.");
 
@@ -89,23 +93,23 @@ public class climain {
 	
 	public static String captarComando(String cont) throws Exception{ 
 		// creamos variables
-		String comand="";
+		String command="";
 		
 		// recortamos hasta el primer espacio
 		int posicion = cont.indexOf(" ");
 		if(posicion>-1) {
-			comand = cont.substring(0,posicion);
+			command = cont.substring(0,posicion);
 		} else {
-			comand = cont;
+			command = cont;
 		}
 		// vemos que sea valido
-		if(!comand.equals("pwd") && !comand.equals("cd") && !comand.equals("ls") && !comand.equals("ll") &&
-			 !comand.equals("help") && !comand.equals("exit") && !comand.equals("view") && 
-			 !comand.equals("clear") && !comand.equals("edit")) {
+		if(!command.equals("pwd") && !command.equals("cd") && !command.equals("ls") && !command.equals("ll") &&
+			 !command.equals("help") && !command.equals("exit") && !command.equals("view") && 
+			 !command.equals("clear") && !command.equals("edit")) {
 			throw new Exception("Comando no valido");
 		}
 		// devolvemos el comando
-		return comand;
+		return command;
 	}
 	
 	public static String captarContenido(String cont) {

@@ -2,23 +2,25 @@ package main.libs;
 
 import java.util.*;
 import java.io.*;
+import main.libs.listener;
 import main.libs.sanCLI.climain;
 
 public class proto {
     public static void main(String[] args) {
+        System.out.println("Running proto...");
         switch (args[0]) {
             case "view":
                 viewCall(args[1], true);
             break;
             case "edit":
                 editInitCall(args[1]);
-                //libs.sanCLI.climain.editing = true;
+            break;
         }
     }
 
     static void editInitCall(String ruta) {
         viewCall(ruta, false);
-        main.libs.listener.main(null);
+            listener.main(null);
     }
 
     static void viewCall(String ruta, boolean headers) {
