@@ -1,6 +1,0 @@
-{
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "proto/jarLibs/jnativehook-2.2.2.jar"
-    ]
-}
