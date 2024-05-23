@@ -62,8 +62,8 @@ public class CLIinstance {
 				System.out.println(Manager.getPWD());
 			break;
 			case "cd":
-				path=catchContent(content);
-				changes=Manager.changeDir(path);
+				String[] temp = catchArgs(content);
+				changes=Manager.changeDir(temp);
 				if(!changes) {
 					System.out.println("Command could not be run, if problem persists, open a issue on Github.");
 				}
@@ -78,14 +78,14 @@ public class CLIinstance {
 				showHelp();
 			break;
 			case "view":
-				path = catchContent(content);
+				path = catchArgs(content)[0];
 				tempArgs = new String[2];
 				tempArgs[0]=command;
 				tempArgs[1]=path;
 				Proto.main(tempArgs);
 			break;
 			case "edit":
-				path = catchContent(content);
+				path = catchArgs(content)[1];
 				tempArgs = new String[2];
 				tempArgs[0]=command;
 				tempArgs[1]=path;
@@ -135,12 +135,8 @@ public class CLIinstance {
 		return command;
 	}
 	
-	public static String catchContent(String cont) {
-		// creamos las variables y obtenemos cual es el contenido mediante el substring
-		String content="";
-			int pos = cont.indexOf(" ");
-			content = cont.substring(pos+1);
-		return content;
+	public static String[] catchArgs(String cont) {
+		return cont.split(" ");
 	}
 
 }
