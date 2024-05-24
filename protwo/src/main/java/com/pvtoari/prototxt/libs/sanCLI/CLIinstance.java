@@ -9,7 +9,7 @@ import com.pvtoari.prototxt.libs.Ansi;
 import com.pvtoari.prototxt.libs.Proto;
 
 public class CLIinstance {
-	private Scanner scanner;
+	private static Scanner scanner = new Scanner(System.in);
 	private String command, content, path;
 	private boolean killed;
 	boolean changes;
@@ -22,16 +22,11 @@ public class CLIinstance {
 		
 		this.setDefaultValues();
 		System.gc();
-
-		scanner = new Scanner(System.in);
 		//System.out.println("Debug info\n"+ ansi.colorize(scanner.toString())); //debug stuff
 		do {
 			System.out.print("proto >" + " " + ANSI_HIGHLIGHT.colorize(Manager.getPWD()) + " > ");
-			if (!scanner.hasNextLine()) {
-				scanner = new Scanner(System.in);
-				System.out.println("el fokin error esta sucediendo");
-			}
 			content=scanner.nextLine();
+
 			try {
 				// para saber que comando ha introducido, leemos hasta el primer espacio.
 				command=catchCommand(content);
@@ -39,6 +34,7 @@ public class CLIinstance {
 				System.out.println(e.getMessage());
 				continue;
 			}
+			
 			runCommand(command, content);
 		}while(!command.equals("exit")&&!killed);
 	}

@@ -9,10 +9,17 @@ import com.github.kwhat.jnativehook.NativeHookException;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent;
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener;
 import com.pvtoari.prototxt.RunMe;
+import com.pvtoari.prototxt.libs.sanCLI.CLIinstance;
+import javax.swing.SwingUtilities;
 
 public class Listener implements NativeKeyListener {
-	public static final int CHARACTER_PER_LINE_LIMIT = 80;
-	private int counting = 0;
+	public static int CHARACTER_PER_LINE_LIMIT = 80;
+	public static final int VC_ARROW_UP = 57416;
+	public static final int VC_ARROW_DOWN = 57424;
+	public static final int VC_ARROW_LEFT = 57419;
+	public static final int VC_ARROW_RIGHT = 57421;
+	private int counting = 0; //might remove
+	private boolean editing = false;
 	private boolean isAlt = false;
 	private boolean isControl = false; 
 	private boolean isShift = false;
@@ -20,35 +27,8 @@ public class Listener implements NativeKeyListener {
 	
 	public Listener() {}
 	
-	public static boolean isLatinLetter(String s) {
-		String aux = s;
-		aux=aux.toLowerCase();
-		return aux.length() == 1 && aux.charAt(0) >= 'a' && aux.charAt(0) <= 'z';
-	}
-	
-	public String parseCap(String s) {
-		String res = "";
-
-		if(!isLatinLetter(s) && isShift) {
-			switch(s) {
-				// parsing spanish special characters, might do a Locale system in the future
-				case "1": res="!"; break;
-				case "2": res="\""; break;
-				case "3": res="·"; break;
-				case "4": res="$"; break;
-				case "5": res="%"; break;
-				case "6": res="&"; break;
-				case "7": res="/"; break;
-				case "8": res="("; break;
-				case "9": res=")"; break;
-				case "0": res="="; break;
-			}
-		}
-		return res;
-	}
-
 	public void nativeKeyReleased(NativeKeyEvent e) {
-		System.out.println(e.getKeyCode());
+		//System.out.println(e.getKeyCode()); used for debugging
 		switch(e.getKeyCode()) {
 			case NativeKeyEvent.VC_SHIFT: 
 				caps=false;
@@ -89,19 +69,33 @@ public class Listener implements NativeKeyListener {
 				isAlt = true;
 				break;
 			case NativeKeyEvent.VC_F10:
+			System.out.println("shit i got killed");
 				this.kill();
-				System.out.println("shit i got killed");
-				RunMe.instance.run();
 				break;
 			case NativeKeyEvent.VC_CONTROL:
 				this.isControl = true;
 				break;
+			case VC_ARROW_UP:
+				Proto.hlPointer.forwardRow();
+				break;
+			case VC_ARROW_DOWN:
+				Proto.hlPointer.backwardRow();
+				break;
+			case VC_ARROW_LEFT:
+				Proto.hlPointer.forwardColumn();
+				break;
+			case VC_ARROW_RIGHT:
+				Proto.hlPointer.forwardColumn();
+				break;
+			case 83:
+				System.out.println("I'm tracking :^)");
 			default: {
 				//handle writing
 				if(caps==false) toAppend=toAppend.toLowerCase();
 			}
 		}
 
+		//useless rn
 		if (this.counting == CHARACTER_PER_LINE_LIMIT) {
 			//handle character-per-line limit
 			this.counting = 0;
@@ -122,34 +116,51 @@ public class Listener implements NativeKeyListener {
 	}
 
 	public void start() {
+		this.editing = true;
 		try {
 			GlobalScreen.registerNativeHook();
 		}
-		catch (NativeHookException ex) {
-			System.exit(1);
+		catch (NativeHookException e) {
+			//System.exit(1);
+			e.printStackTrace();
 		}
 		
-		GlobalScreen.addNativeKeyListener(new Listener());
-
-		
-		Runtime.getRuntime().addShutdownHook(new Thread()
-			{
+		GlobalScreen.addNativeKeyListener(Listener.this);
+		Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
 					//handle process killing events
+					Listener.this.kill();
 				}
-			});
+		});
 	}
 
-	public void kill() {
+	private void kill() {
+		// https://github.com/kwhat/jnativehook/issues/109
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					GlobalScreen.unregisterNativeHook();
+					GlobalScreen.removeNativeKeyListener(Listener.this);
+				} catch (NativeHookException e) {
+					e.printStackTrace();
+				} finally {
+					Listener.this.editing = false;
+					deleteTraces();
+					RunMe.instance.run();
+				}
+			}
+		});
+	}
+
+	// might remove
+	public void restart() {
 		try {
-			GlobalScreen.unregisterNativeHook();
+			GlobalScreen.registerNativeHook();
 		} catch (NativeHookException e) {
 			e.printStackTrace();
-		} finally {
-			deleteTraces();
-			RunMe.main(null);
 		}
+		GlobalScreen.addNativeKeyListener(this);
 	}
 
 	public boolean getShiftState() {
@@ -162,5 +173,36 @@ public class Listener implements NativeKeyListener {
 
 	public boolean getAltState() {
 		return this.isAlt;
+	}
+
+	public static boolean isLatinLetter(String s) {
+		String aux = s;
+		aux=aux.toLowerCase();
+		return aux.length() == 1 && aux.charAt(0) >= 'a' && aux.charAt(0) <= 'z';
+	}
+	
+	public String parseCap(String s) {
+		String res = "";
+
+		if(!isLatinLetter(s) && isShift) {
+			switch(s) {
+				// parsing spanish special characters, might do a Locale system in the future
+				case "1": res="!"; break;
+				case "2": res="\""; break;
+				case "3": res="·"; break;
+				case "4": res="$"; break;
+				case "5": res="%"; break;
+				case "6": res="&"; break;
+				case "7": res="/"; break;
+				case "8": res="("; break;
+				case "9": res=")"; break;
+				case "0": res="="; break;
+			}
+		}
+		return res;
+	}
+
+	public boolean getEditing() {
+		return this.editing;
 	}
 }

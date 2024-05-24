@@ -4,9 +4,8 @@ import com.pvtoari.prototxt.libs.sanCLI.*;
 
 public class RunMe {
 
-    public static CLIinstance instance = null;
+    public static CLIinstance instance = new CLIinstance();
     public static void main(String[] args) {
-        instance = new CLIinstance();
         instance.run();
     }
 }
